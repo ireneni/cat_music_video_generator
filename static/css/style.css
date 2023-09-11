@@ -1,0 +1,27 @@
+body {
+    background: #158587;
+}
+
+h1 {
+    color: #FFF;
+    text-align: center;
+    font-family: Rubik Mono One;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    padding-top: 120px;
+    padding-bottom: 20px;
+}
+
+.banner {
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.form-container {
+    text-align: center;
+    #search {
+        width: 340px;
+    }
+}
