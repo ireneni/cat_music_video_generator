@@ -1,27 +1,49 @@
 body {
     background: #158587;
+    text-align: center;
 }
 
 h1 {
     color: #FFF;
-    text-align: center;
     font-family: Rubik Mono One;
     font-size: 24px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
     padding-top: 120px;
     padding-bottom: 20px;
 }
 
 .banner {
-    text-align: center;
     padding-bottom: 20px;
 }
 
 .form-container {
-    text-align: center;
-    #search {
+
+    #search-bar {
         width: 340px;
     }
+}
+
+.results-list {
+    list-style-type: none;
+    color: #FFF;
+    font-family: Fira Mono;
+    font-size: 16px;
+    padding-top: 20px;
+}
+
+li:hover {
+    color: #F993C5;
+    cursor: pointer;
+}
+
+/* styling for slideshow page */
+ .slideshow-container {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* CSS for styling images */
+.slide-image {
+    width: 100%;
+    height: auto;
 }

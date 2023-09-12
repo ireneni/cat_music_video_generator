@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 import urllib
 import json
 import requests
@@ -12,7 +12,7 @@ import image_search
 app = Flask(__name__)
 
 
-def lyrics_search(search_term):
+def song_search(search_term):
     # Format a request URI for the Genius API
     _URL_API = "https://api.genius.com/"
     _URL_SEARCH = "search?q="
@@ -26,16 +26,22 @@ def lyrics_search(search_term):
 
     data_json = json.loads(response.read())
 
-    # print(data_json['response']['hits'][0]['result'].keys())
-    title = data_json['response']['hits'][0]['result']['title']
-    artist = data_json['response']['hits'][0]['result']['artist_names']
-    url = data_json['response']['hits'][0]['result']['url']
+    song_dict = {}
+    for i in range(3):
+        song_dict['song-' + str(i)] = str(i+1) + '. ' + data_json['response']['hits'][i]['result']['title'] + ' by ' + data_json['response']['hits'][i]['result']['artist_names']
+        song_dict['url-' + str(i)] = data_json['response']['hits'][i]['result']['url']
+
+    return song_dict
+
+
+def get_lyrics(url):
     page = requests.get(url)
     html = BeautifulSoup(page.text, "html.parser")  # Extract the page's HTML as a string
     # Scrape the song lyrics from the HTML
     soup = html.find_all("div", attrs={'class': re.compile('^Lyrics__Container.*')})
     lyrics = '\n'.join(item.getText(separator='\n') for item in soup)
-    return title, artist, lyrics
+
+    return lyrics
 
 
 def split_lyrics_by_line(lyrics):
@@ -59,11 +65,13 @@ def extract_keywords(split_lyrics):
     result = {}
     pos_tag = ['PROPN', 'ADJ', 'NOUN']
     for i in range(len(split_lyrics)):
-        doc = nlp(split_lyrics[i].lower())
+        if i > 2:
+            break
+        doc = nlp(split_lyrics[i])
         for token in doc:
             if token.text in nlp.Defaults.stop_words or token.text in punctuation:
                 continue
-            if token.pos_ in pos_tag:
+            if token.pos_ in pos_tag or token.dep_ == 'pcomp':
                 if i in result.keys():
                     result[i] = get_more_common_word(result[i], token.text)
                 else:
@@ -72,6 +80,10 @@ def extract_keywords(split_lyrics):
 
 
 def get_more_common_word(a, b):
+    if len(a) < 3 < len(b):
+        return b
+    if len(b) < 3 < len(a):
+        return a
     freq_a = wordfreq.word_frequency(a, 'en')
     freq_b = wordfreq.word_frequency(b, 'en')
     if freq_a > freq_b:
@@ -80,28 +92,38 @@ def get_more_common_word(a, b):
         return b
 
 
-def scrape_images(keyword_dict):
-    for key in keyword_dict:
-        image_search.download_google_images(
-            keyword_dict[key] + ' cat pinterest',
-            key
-        )
-
-#
-# lyrics_result = lyrics_search('Mamma Mia')
-# lyrics_split = split_lyrics_by_line(lyrics_result[2])
-# keywords = extract_keywords(lyrics_split)
-# print(scrape_images(keywords))
+init_data = {}
 
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', data=init_data)
 
 
-@app.route('/get_query', methods=['GET', 'POST'])
+@app.route('/get_query', methods=['POST'])
 def get_song_query():
     if request.method == 'POST':
-        song_name = request.form
-        return render_template('create.html')
+        song_name = request.form.get('search')
+        songs = song_search(song_name)
+        return render_template('index.html', data=songs)
 
+
+@app.route('/process_selection', methods=['POST'])
+def process_selection():
+    if request.method == 'POST':
+        url = request.json.get('selectedItem')
+        lyrics = get_lyrics(url)
+        lyrics_split = split_lyrics_by_line(lyrics)
+        keywords = extract_keywords(lyrics_split)
+        urls = image_search.scrape_images(keywords)
+        print(urls)
+        return redirect('/slideshow')
+
+
+@app.route('/slideshow', methods=['GET'])
+def slideshow():
+    return render_template('slideshow.html')
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

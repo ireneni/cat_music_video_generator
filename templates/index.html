@@ -6,15 +6,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono&family=Rubik+Mono+One&display=swap" rel="stylesheet">
 </head>
 <body>
-   <h1>Cat Lyric Video Generator</h1>
+   <h1>Cat Music Video Generator</h1>
    <div class="banner">
        <img src="/static/images/headphone_cat.png" alt="Cat">
    </div>
    <div class="form-container">
        <form class="form" action="/get_query" method = "POST">
-           <input id="search" type="text" class="input" placeholder="search for a song..."/>
+           <input id="search-bar" class="input" name="search" placeholder="search for a song..."/>
            <button class="input">search</button>
            <button id="clear" class="clear-results">clear</button>
        </form>
@@ -22,8 +23,41 @@
     </div>
     <div class="results-container">
        <ul class="results-list" id="list">
-
+           <li id="song-1">{{ data['song-0']  }}</li>
+           <li id="song-2">{{ data['song-1'] }}</li>
+           <li id="song-3">{{ data['song-2'] }}</li>
        </ul>
+        <script>
+        // JavaScript function to send an HTTP request when an <li> item is clicked
+        document.getElementById('song-1').addEventListener('click', function() {
+            sendRequest('{{ data['url-0'] }}');
+        });
+
+        document.getElementById('song-2').addEventListener('click', function() {
+            sendRequest('{{ data['url-1'] }}');
+        });
+
+        document.getElementById('song-3').addEventListener('click', function() {
+            sendRequest('{{ data['url-2'] }}');
+        });
+
+        function sendRequest(selectedItem) {
+            // Send an HTTP request to the backend to inform of the user's selection
+            fetch('/process_selection', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ selectedItem })
+            })
+            .then(response => {
+                window.location.href = '/slideshow';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
     </div>
 </body>
 </html>
