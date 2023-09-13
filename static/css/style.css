@@ -17,7 +17,12 @@ h1 {
     padding-bottom: 20px;
 }
 
+.hint, .instructions {
+    color: #51DED5;
+}
+
 .form-container {
+    padding-bottom: 20px;
 
     #search-bar {
         width: 340px;
@@ -26,7 +31,7 @@ h1 {
 
 .results-list {
     list-style-type: none;
-    padding-top: 20px;
+    padding-top: 10px;
 }
 
 li:hover {
