@@ -1,8 +1,8 @@
 import time
-# import base64
-# from io import BytesIO
-# import re
-# import os
+import base64
+from io import BytesIO
+import re
+import os
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -13,15 +13,15 @@ from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-# import requests
-# from PIL import Image
+import requests
+from PIL import Image
 
-# cwd = os.getcwd()
-# IMAGE_FOLDER = 'images'
-# os.makedirs(
-#     name=f'{cwd}/{IMAGE_FOLDER}',
-#     exist_ok=True
-# )
+cwd = os.getcwd()
+IMAGE_FOLDER = 'static/lyric_cats'
+os.makedirs(
+    name=f'{cwd}/{IMAGE_FOLDER}',
+    exist_ok=True
+)
 
 SLEEP_TIME = 0.2
 LONG_SLEEP = 0.5
@@ -36,17 +36,18 @@ def scrape_images(keyword_dict):
         options=options
     )
 
-    urls = {}
+    file_names = {}
+
     for key in keyword_dict:
-        url, order,  = download_google_images(
+        file_name = download_google_images(
             driver,
             keyword_dict[key] + ' cat pinterest',
             key
         )
-        urls[order] = url
+        file_names[key] = file_name
 
+    return file_names
     driver.quit()
-    return urls
 
 
 def download_google_images(driver, search_query: str, order: int):
@@ -97,44 +98,44 @@ def download_google_images(driver, search_query: str, order: int):
             )
         )
         img_result.click()
-        time.sleep(SLEEP_TIME)
+        time.sleep(LONG_SLEEP)
 
         src = img_result.get_attribute('src')
 
-        # if 'https://' in src:
-        #     image_name = search_query.replace('/', ' ')
-        #     image_name = re.sub(pattern=" ", repl="_", string=image_name)
-        #     file_path = f'{IMAGE_FOLDER}/_{image_name}.jpeg'
-        #     try:
-        #         result = requests.get(src, allow_redirects=True, timeout=10)
-        #         open(file_path, 'wb').write(result.content)
-        #         img = Image.open(file_path)
-        #         img = img.convert('RGB')
-        #         img.save(file_path, 'JPEG')
-        #         print('Image saved from https.')
-        #         return file_path
-        #     except:
-        #         print('Bad image.')
-        #         try:
-        #             os.unlink(file_path)
-        #         except:
-        #             pass
-        # else:
-        #     img_data = src.split(',')
-        #     image_name = search_query.replace('/', ' ')
-        #     image_name = re.sub(pattern=" ", repl="_", string=image_name)
-        #     file_path = f'{IMAGE_FOLDER}/{order}_{image_name}.jpeg'
-        #     try:
-        #         img = Image.open(BytesIO(base64.b64decode(img_data[1])))
-        #         img = img.convert('RGB')
-        #         img.save(file_path, 'JPEG')
-        #         print('Image saved from Base64.')
-        #         return file_path
-        #     except:
-        #         print('Bad image.')
-        return src, order
+        if 'https://' in src:
+            image_name = search_query.replace('/', ' ')
+            image_name = re.sub(pattern=" ", repl="_", string=image_name)
+            file_path = f'{IMAGE_FOLDER}/{order}_{image_name}.jpeg'
+            try:
+                result = requests.get(src, allow_redirects=True, timeout=10)
+                open(file_path, 'wb').write(result.content)
+                img = Image.open(file_path)
+                img = img.convert('RGB')
+                img.save(file_path, 'JPEG')
+                print('Image saved from https.')
+                return file_path
+            except:
+                print('Bad image.')
+                try:
+                    os.unlink(file_path)
+                except:
+                    pass
+        else:
+            img_data = src.split(',')
+            image_name = search_query.replace('/', ' ')
+            image_name = re.sub(pattern=" ", repl="_", string=image_name)
+            file_path = f'{IMAGE_FOLDER}/{order}_{image_name}.jpeg'
+            try:
+                img = Image.open(BytesIO(base64.b64decode(img_data[1])))
+                img = img.convert('RGB')
+                img.save(file_path, 'JPEG')
+                print('Image saved from Base64.')
+                return file_path
+            except:
+                print('Bad image.')
+        return file_path
     except ElementClickInterceptedException as e:
         print(e)
         print('Image is not clickable.')
-        return "/static/images/headphone_cat.png", order
+        return "/static/images/headphone_cat.png"
 

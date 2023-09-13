@@ -13,28 +13,29 @@
   <div class="slideshow-container">
         <div id="slideshow"></div>
     </div>
-<!--    <script>-->
-<!--        // JavaScript code to create the slideshow-->
-<!--        const lyricsData = {{ lyrics }};-->
-<!--        const imageData = {{ images }};-->
-<!--        const slideshowContainer = document.getElementById('slideshow');-->
+    <script>
+        // JavaScript code to create the slideshow
+        const lyricsData = {{ lyrics|safe }}
+        const imageData = {{ images|safe }}
+        console.log(lyricsData)
+        const slideshowContainer = document.getElementById('slideshow');
 
-<!--        Object.keys(lyricsData).forEach(lineNumber => {-->
-<!--            const slide = document.createElement('div');-->
-<!--            slide.className = 'mySlides';-->
+        Object.keys(lyricsData).forEach(lineNumber => {
+            const slide = document.createElement('div');
+            slide.className = 'mySlides';
 
-<!--            // Check if there's an image for this line, use default if not-->
-<!--            const imageUrl = imageData[lineNumber] || '/static/images/headphone_cat.png';-->
+            // Check if there's an image for this line, use default if not
+            const imageUrl = '/' + imageData[lineNumber] || '/static/images/headphone_cat.png';
 
-<!--            slide.innerHTML = `-->
-<!--                <img class="slide-image" src="${imageUrl}" alt="Image for line ${lineNumber}">-->
-<!--                <p>${lyricsData[lineNumber]}</p>-->
-<!--            `;-->
+            slide.innerHTML = `
+                <img class="slide-image" src="${imageUrl}" alt="Image for line ${lineNumber}">
+                <p>${lyricsData[lineNumber]}</p>
+            `;
 
-<!--            slideshowContainer.appendChild(slide);-->
-<!--        });-->
+            slideshowContainer.appendChild(slide);
+        });
 
-<!--        // You can add JavaScript for slideshow functionality (e.g., next/prev buttons) here.-->
-<!--    </script>-->
+        // You can add JavaScript for slideshow functionality (e.g., next/prev buttons) here.
+    </script>
 </body>
 </html>

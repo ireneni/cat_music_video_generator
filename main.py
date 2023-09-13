@@ -51,7 +51,7 @@ def split_lyrics_by_line(lyrics):
     for x in s:
         if '[' in x:
             continue
-        elif len(x) < 3:
+        elif len(x) < 2:
             continue
         else:
             for key, val in chars_to_replace.items():
@@ -65,7 +65,7 @@ def extract_keywords(split_lyrics):
     result = {}
     pos_tag = ['PROPN', 'ADJ', 'NOUN']
     for i in range(len(split_lyrics)):
-        if i > 2:
+        if i > 1:
             break
         doc = nlp(split_lyrics[i])
         for token in doc:
@@ -115,14 +115,17 @@ def process_selection():
         lyrics = get_lyrics(url)
         lyrics_split = split_lyrics_by_line(lyrics)
         keywords = extract_keywords(lyrics_split)
-        urls = image_search.scrape_images(keywords)
-        print(urls)
-        return redirect('/slideshow')
+        image_files_dict = image_search.scrape_images(keywords)
+        lyrics_dict = dict(enumerate(lyrics_split[:2]))
+        # return redirect(url_for('display_slideshow', lyrics=lyrics_dict, images=image_files_dict))
 
 
 @app.route('/slideshow', methods=['GET'])
-def slideshow():
-    return render_template('slideshow.html')
+def display_slideshow():
+    print('display slideshow is executing')
+    lyrics = request.args.get('lyrics')
+    images = request.args.get('images')
+    return render_template('slideshow.html', lyrics=lyrics, images=images)
 
 
 if __name__ == '__main__':
