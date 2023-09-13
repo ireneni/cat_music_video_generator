@@ -1,10 +1,12 @@
 body {
     background: #158587;
     text-align: center;
+    color: #FFF;
+    font-family: Fira Mono;
+    font-size: 16px;
 }
 
 h1 {
-    color: #FFF;
     font-family: Rubik Mono One;
     font-size: 24px;
     padding-top: 120px;
@@ -24,9 +26,6 @@ h1 {
 
 .results-list {
     list-style-type: none;
-    color: #FFF;
-    font-family: Fira Mono;
-    font-size: 16px;
     padding-top: 20px;
 }
 
@@ -44,6 +43,23 @@ li:hover {
 
 /* CSS for styling images */
 .slide-image {
-    width: 100%;
+    max-width: 400px;
     height: auto;
+}
+
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  user-select: none;
+}
+.prev {
+    left: -40px;
+}
+.next {
+  right: -40px;
 }

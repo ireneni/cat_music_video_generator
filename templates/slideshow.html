@@ -12,7 +12,6 @@
  <h1>Cat Music Video Generator</h1>
   <div class="slideshow-container">
         <div id="slideshow"></div>
-    </div>
     <script>
         // JavaScript code to create the slideshow
         const lyricsData = {{ lyrics|safe }}
@@ -25,7 +24,12 @@
             slide.className = 'mySlides';
 
             // Check if there's an image for this line, use default if not
-            const imageUrl = '/' + imageData[lineNumber] || '/static/images/headphone_cat.png';
+            let imageUrl = '';
+            if (lineNumber in imageData) {
+                imageUrl = '/' + imageData[lineNumber];
+            } else {
+                imageUrl = '/static/images/cat-twerk.gif'
+            }
 
             slide.innerHTML = `
                 <img class="slide-image" src="${imageUrl}" alt="Image for line ${lineNumber}">
@@ -34,8 +38,39 @@
 
             slideshowContainer.appendChild(slide);
         });
-
-        // You can add JavaScript for slideshow functionality (e.g., next/prev buttons) here.
     </script>
+    <script>
+        var slideIndex = 1; // Start with the first slide
+        showSlides(slideIndex);
+
+        // Function to show a specific slide
+        function showSlides(index) {
+            var slides = document.getElementsByClassName("mySlides");
+
+            // Ensure the index is within the valid range
+            if (index < 1) {
+                slideIndex = slides.length;
+            } else if (index > slides.length) {
+                slideIndex = 1;
+            }
+
+            // Hide all slides
+            for (var i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+
+            // Display the current slide
+            slides[slideIndex - 1].style.display = "block";
+        }
+
+        // Function to navigate to the next or previous slide
+        function plusSlides(offset) {
+            showSlides(slideIndex += offset);
+        }
+    </script>
+        <!-- Left and right arrow buttons -->
+    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+  </div>
 </body>
 </html>

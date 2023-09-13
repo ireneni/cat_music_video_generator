@@ -36,6 +36,9 @@ def scrape_images(keyword_dict):
         options=options
     )
 
+    for f in os.listdir(IMAGE_FOLDER):
+        os.remove(os.path.join(IMAGE_FOLDER, f))
+
     file_names = {}
 
     for key in keyword_dict:

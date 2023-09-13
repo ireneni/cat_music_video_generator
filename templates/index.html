@@ -17,7 +17,6 @@
        <form class="form" action="/get_query" method = "POST">
            <input id="search-bar" class="input" name="search" placeholder="search for a song..."/>
            <button class="input">search</button>
-           <button id="clear" class="clear-results">clear</button>
        </form>
 
     </div>
@@ -51,7 +50,7 @@
                 body: JSON.stringify({ selectedItem })
             })
             .then(response => {
-<!--                window.location.href = 'slideshow';-->
+                window.location.href = response.url;
             })
             .catch(error => {
                 console.error('Error:', error);

@@ -65,7 +65,8 @@ def extract_keywords(split_lyrics):
     result = {}
     pos_tag = ['PROPN', 'ADJ', 'NOUN']
     for i in range(len(split_lyrics)):
-        if i > 1:
+        # remove if statement below for full lyrics
+        if i > 9:
             break
         doc = nlp(split_lyrics[i])
         for token in doc:
@@ -116,8 +117,9 @@ def process_selection():
         lyrics_split = split_lyrics_by_line(lyrics)
         keywords = extract_keywords(lyrics_split)
         image_files_dict = image_search.scrape_images(keywords)
-        lyrics_dict = dict(enumerate(lyrics_split[:2]))
-        # return redirect(url_for('display_slideshow', lyrics=lyrics_dict, images=image_files_dict))
+        # remove the split for full lyrics
+        lyrics_dict = dict(enumerate(lyrics_split[:10]))
+        return redirect(url_for('display_slideshow', lyrics=lyrics_dict, images=image_files_dict))
 
 
 @app.route('/slideshow', methods=['GET'])
