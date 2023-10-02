@@ -1,6 +1,6 @@
 # Cat Music Video Generator
 
-The cat music video generator is a Flask webapp that takes any song and creates a lyric video with CAT PICTURES. This project was inspired by [catmusicvideo](https://www.tiktok.com/@catmusicvideo). Here it is in action:
+The cat music video generator is a Flask webapp that takes any song and creates a lyric video from CAT PICTURES. This project was inspired by [catmusicvideo](https://www.tiktok.com/@catmusicvideo). Here it is in action:
 
 https://github.com/ireneni/cat_music_video_generator/assets/36576160/55105056-57b0-4735-86f6-61a8704ee5a0
 
