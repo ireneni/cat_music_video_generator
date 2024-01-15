@@ -10,60 +10,74 @@
 </head>
 <body>
    <h1>Cat Music Video Generator</h1>
-   <div class="banner">
-       <img src="/static/images/headphone_cat.png" alt="Cat">
-   </div>
-   <p class="hint">hint: include the artist name for more accurate results.</p>
-   <div class="form-container">
-       <form class="form" action="/get_query" method = "POST">
-           <input id="search-bar" class="input" name="search" placeholder="search for a song..."/>
-           <button class="input">search</button>
-       </form>
-
+   <div id="loading">
+    <div class="banner">
+        <p class="hint">downloading cat images...</p>
+        <img src="/static/images/loading.gif" alt="Loading cat">
     </div>
-    <div class="results-container">
-        <p class="instructions"></p>
-        <script>
-        if ('song-0' in {{ data | safe }}) {
-            document.getElementsByClassName("instructions")[0].innerHTML = "Select your song: "
-        }
-        </script>
-       <ul class="results-list" id="list">
-           <li id="song-1">{{ data['song-0']  }}</li>
-           <li id="song-2">{{ data['song-1'] }}</li>
-           <li id="song-3">{{ data['song-2'] }}</li>
-       </ul>
-        <script>
-        // JavaScript function to send an HTTP request when an <li> item is clicked
-        document.getElementById('song-1').addEventListener('click', function() {
-            sendRequest('{{ data['url-0'] }}');
-        });
-
-        document.getElementById('song-2').addEventListener('click', function() {
-            sendRequest('{{ data['url-1'] }}');
-        });
-
-        document.getElementById('song-3').addEventListener('click', function() {
-            sendRequest('{{ data['url-2'] }}');
-        });
-
-        function sendRequest(selectedItem) {
-            // Send an HTTP request to the backend to inform of the user's selection
-            fetch('/process_selection', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ selectedItem })
-            })
-            .then(response => {
-                window.location.href = response.url;
-            })
-            .catch(error => {
-                console.error('Error:', error);
+   </div>
+   <div id="content">
+    <div class="banner">
+        <img src="/static/images/headphone_cat.png" alt="Cat">
+    </div>
+    <p class="hint">hint: include the artist name for more accurate results.</p>
+    <div class="form-container">
+        <form class="form" action="/get_query" method = "POST">
+            <input id="search-bar" class="input" name="search" placeholder="search for a song..."/>
+            <button class="input">search</button>
+        </form>
+        </div>
+        <div class="results-container">
+            <p class="instructions"></p>
+            <script>
+            if ('song-0' in {{ data | safe }}) {
+                document.getElementsByClassName("instructions")[0].innerHTML = "Select your song: "
+            }
+            </script>
+        <ul class="results-list" id="list">
+            <li id="song-1" onclick="loading()">{{ data['song-0']  }}</li>
+            <li id="song-2" onclick="loading()">{{ data['song-1'] }}</li>
+            <li id="song-3" onclick="loading()">{{ data['song-2'] }}</li>
+        </ul>
+            <script>
+            // JavaScript function to send an HTTP request when an <li> item is clicked
+            document.getElementById('song-1').addEventListener('click', function() {
+                sendRequest('{{ data['url-0'] }}');
             });
-        }
-    </script>
+
+            document.getElementById('song-2').addEventListener('click', function() {
+                sendRequest('{{ data['url-1'] }}');
+            });
+
+            document.getElementById('song-3').addEventListener('click', function() {
+                sendRequest('{{ data['url-2'] }}');
+            });
+
+            function sendRequest(selectedItem) {
+                // Send an HTTP request to the backend to inform of the user's selection
+                fetch('/process_selection', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ selectedItem })
+                })
+                .then(response => {
+                    window.location.href = response.url;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+
+            function loading() {
+                let loadScreen = document.getElementById("loading");
+                loadScreen.style.display = "block";
+                let contentScreen = document.getElementById("content"); 
+                contentScreen.style.display = "none";
+            }
+        </script>
+        </div>
     </div>
 </body>
 </html>

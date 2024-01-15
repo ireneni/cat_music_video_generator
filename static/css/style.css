@@ -18,7 +18,7 @@ h1 {
 }
 
 .hint, .instructions {
-    color: #51DED5;
+    color: #FFCAE0;
 }
 
 .form-container {
@@ -39,10 +39,15 @@ li:hover {
     cursor: pointer;
 }
 
+div#loading {
+    display: none;
+}
+
 /* styling for slideshow page */
  .slideshow-container {
     position: relative;
     max-width: 500px;
+    min-height: 500px;
     margin: 0 auto;
 }
 

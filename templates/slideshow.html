@@ -67,6 +67,15 @@
         function plusSlides(offset) {
             showSlides(slideIndex += offset);
         }
+
+        window.addEventListener('keydown', function(e) {
+            if (e.keyCode == 39) { //right
+                plusSlides(1);
+            }
+            else if (e.keyCode == 37) { //left
+                plusSlides(-1);
+            }
+        })
     </script>
         <!-- Left and right arrow buttons -->
     <a class="prev" onclick="plusSlides(-1)">&#10094;</a>

@@ -50,8 +50,6 @@ def scrape_images(keyword_dict):
         file_names[key] = file_name
 
     return file_names
-    driver.quit()
-
 
 def download_google_images(driver, search_query: str, order: int):
     '''Download google images with this function\n

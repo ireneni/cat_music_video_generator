@@ -63,27 +63,42 @@ def split_lyrics_by_line(lyrics):
 def extract_keywords(split_lyrics):
     nlp = spacy.load("en_core_web_sm")
     result = {}
-    pos_tag = ['PROPN', 'ADJ', 'NOUN']
+    pos = {}
     for i in range(len(split_lyrics)):
         # remove if statement below for full lyrics
-        if i > 9:
+        if i > 16:
             break
         doc = nlp(split_lyrics[i])
         for token in doc:
             if token.text in nlp.Defaults.stop_words or token.text in punctuation:
                 continue
-            if token.pos_ in pos_tag or token.dep_ == 'pcomp':
+            is_meaningful = is_word_meaningful(token)
+            if is_meaningful:
+                pos[token.text] = token.pos_
                 if i in result.keys():
-                    result[i] = get_more_common_word(result[i], token.text)
+                    result[i] = get_more_common_word(result[i], token.text, pos[result[i]], pos[token.text])
                 else:
                     result[i] = token.text
     return result
 
+def is_word_meaningful(token):
+    pos_tag = ['PROPN', 'ADJ', 'NOUN']
+    if token.pos_ in pos_tag:
+        return True
+    verb_tag = ['VB', 'VBG', 'VBN', 'VBD'] 
+    if token.tag_ in verb_tag:
+        return True
+    return False
 
-def get_more_common_word(a, b):
+def get_more_common_word(a, b, a_pos, b_pos):
     if len(a) < 3 < len(b):
         return b
     if len(b) < 3 < len(a):
+        return a
+    # only return verb if both a and b are verbs
+    if a_pos == 'VERB' and b_pos != 'VERB':
+        return b
+    if b_pos == 'VERB' and a_pos != 'VERB':
         return a
     freq_a = wordfreq.word_frequency(a, 'en')
     freq_b = wordfreq.word_frequency(b, 'en')
@@ -118,13 +133,12 @@ def process_selection():
         keywords = extract_keywords(lyrics_split)
         image_files_dict = image_search.scrape_images(keywords)
         # remove the split for full lyrics
-        lyrics_dict = dict(enumerate(lyrics_split[:10]))
+        lyrics_dict = dict(enumerate(lyrics_split[:17]))
         return redirect(url_for('display_slideshow', lyrics=lyrics_dict, images=image_files_dict))
 
 
 @app.route('/slideshow', methods=['GET'])
 def display_slideshow():
-    print('display slideshow is executing')
     lyrics = request.args.get('lyrics')
     images = request.args.get('images')
     return render_template('slideshow.html', lyrics=lyrics, images=images)
