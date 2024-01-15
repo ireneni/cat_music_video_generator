@@ -7,7 +7,7 @@ $ flask --app main run
 
 The cat music video generator is a Flask webapp that takes any song and creates a lyric video from CAT PICTURES. This project was inspired by [catmusicvideo](https://www.tiktok.com/@catmusicvideo). Here it is in action:
 
-https://github.com/ireneni/cat_music_video_generator/assets/36576160/55105056-57b0-4735-86f6-61a8704ee5a0
+https://github.com/ireneni/cat_music_video_generator/assets/36576160/7d3f5d2f-07bf-4d85-9bc7-a91b8502913c
 
 First, the user searches up the name of a song, and the Genius Lyrics API is used to return the top 3 matches. The user then clicks on the correct song, and this selection is sent to the Python backend where the generation process begins.   
   
